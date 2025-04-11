@@ -1,0 +1,7 @@
+[
+  { "name": "New York", "timezone": "America/New_York", "lat": 40.7128, "lon": -74.0060, "offset": -4 },
+  { "name": "London", "timezone": "Europe/London", "lat": 51.5072, "lon": -0.1276, "offset": 1 },
+  { "name": "Brussels", "timezone": "Europe/Brussels", "lat": 50.8503, "lon": 4.3517, "offset": 2 },
+  { "name": "Helsinki", "timezone": "Europe/Helsinki", "lat": 60.1699, "lon": 24.9384, "offset": 3 },
+  { "name": "Singapore", "timezone": "Asia/Singapore", "lat": 1.3521, "lon": 103.8198, "offset": 8 }
+]
