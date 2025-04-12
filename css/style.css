@@ -4,9 +4,12 @@
   --card-bg: #f9f9f9;
   --border-color: #dddddd;
   --highlight-color: #ff3b30;
-  --font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  --font-family: -apple-system, BlinkMacSystemFont, "San Francisco", "Helvetica Neue", Helvetica, Arial, sans-serif;
   --clock-bg: #eeeeee;
   --highlight-bg: #ffd700;
+  --tooltip-bg: #333;
+  --tooltip-color: #fff;
+  --shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 body.dark-mode {
@@ -16,6 +19,9 @@ body.dark-mode {
   --border-color: #444444;
   --clock-bg: #3a3a3a;
   --highlight-bg: #555555;
+  --tooltip-bg: #f0f0f0;
+  --tooltip-color: #1e1e1e;
+  --shadow: 0 4px 12px rgba(255, 255, 255, 0.05);
 }
 
 * {
@@ -23,6 +29,7 @@ body.dark-mode {
   padding: 0;
   box-sizing: border-box;
   font-family: var(--font-family);
+  transition: background-color 0.3s, color 0.3s;
 }
 
 body {
@@ -33,7 +40,6 @@ body {
   align-items: center;
   min-height: 100vh;
   padding: 20px;
-  transition: background 0.3s, color 0.3s;
 }
 
 .toggle-mode {
@@ -45,6 +51,7 @@ body {
   padding: 8px 16px;
   border-radius: 8px;
   cursor: pointer;
+  box-shadow: var(--shadow);
 }
 
 h1 {
@@ -62,6 +69,7 @@ h1 {
   max-width: 1200px;
   width: 100%;
   justify-content: center;
+  box-shadow: var(--shadow);
 }
 
 .calendar {
@@ -70,6 +78,7 @@ h1 {
   padding: 20px;
   flex: 1;
   text-align: center;
+  box-shadow: var(--shadow);
 }
 
 .calendar h3 {
@@ -81,24 +90,41 @@ table {
   border-collapse: collapse;
 }
 
-th, td {
+th {
   padding: 6px;
   text-align: center;
-  border: 1px solid var(--border-color);
+  color: var(--text-color);
 }
 
-th {
-  background-color: var(--border-color);
+td {
+  padding: 6px;
+  text-align: center;
+  color: var(--text-color);
 }
 
 .today {
-  background-color: var(--highlight-color);
-  color: white;
-  border-radius: 50%;
-  display: inline-block;
-  width: 24px;
-  height: 24px;
-  line-height: 24px;
+  color: var(--highlight-color);
+  font-weight: bold;
+}
+
+.bank-holiday {
+  font-weight: bold;
+  position: relative;
+}
+
+.bank-holiday:hover::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--tooltip-bg);
+  color: var(--tooltip-color);
+  padding: 5px 8px;
+  border-radius: 4px;
+  white-space: nowrap;
+  box-shadow: var(--shadow);
+  z-index: 10;
 }
 
 .timezones {
@@ -115,8 +141,8 @@ th {
   border-radius: 12px;
   padding: 16px;
   text-align: center;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   flex: 1;
+  box-shadow: var(--shadow);
 }
 
 .clock .city {
@@ -129,6 +155,7 @@ th {
   font-weight: bold;
   margin: 4px 0;
   font-size: 1.6rem;
+  color: var(--highlight-color);
 }
 
 .clock .sunrise,
@@ -144,6 +171,9 @@ th {
   overflow-x: auto;
   position: relative;
   margin-top: 40px;
+  box-shadow: var(--shadow);
+  border-radius: 12px;
+  background: var(--card-bg);
 }
 
 .comparison-row {
@@ -166,8 +196,7 @@ th {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  border: 1px solid var(--border-color);
-  position: relative;
+  border-right: 1px solid var(--border-color);
   font-size: 0.8rem;
 }
 
@@ -178,4 +207,40 @@ th {
 
 .current-hour {
   background-color: var(--highlight-bg);
+}
+
+.dst-info {
+  margin-top: 30px;
+  text-align: center;
+  max-width: 1200px;
+  width: 100%;
+  background: var(--card-bg);
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: var(--shadow);
+}
+
+.holidays-container {
+  margin-top: 20px;
+  text-align: center;
+  max-width: 1200px;
+  width: 100%;
+  background: var(--card-bg);
+  border-radius: 12px;
+  box-shadow: var(--shadow);
+}
+
+.toggle-holidays {
+  background: none;
+  border: none;
+  color: var(--highlight-color);
+  font-size: 1rem;
+  padding: 12px;
+  cursor: pointer;
+  width: 100%;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.holidays-list {
+  padding: 15px;
 }
