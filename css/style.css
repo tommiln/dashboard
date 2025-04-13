@@ -1,296 +1,175 @@
-:root {
-  --bg-color: #ffffff;
-  --text-color: #333333;
-  --card-bg: #f9f9f9;
-  --border-color: #dddddd;
-  --highlight-color: #ff3b30;
-  --font-family: -apple-system, BlinkMacSystemFont, "San Francisco", "Helvetica Neue", Helvetica, Arial, sans-serif;
-  --clock-bg: #eeeeee;
-  --highlight-bg: #ffd700;
-}
-
-body.dark-mode {
-  --bg-color: #1e1e1e;
-  --text-color: #f0f0f0;
-  --card-bg: #2c2c2c;
-  --border-color: #444444;
-  --clock-bg: #3a3a3a;
-  --highlight-bg: #555555;
-}
-
-* {
+body {
   margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: var(--font-family);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  background: #fff;
+  color: #333;
+  text-align: center;
   transition: all 0.3s ease;
 }
 
-body {
-  background: var(--bg-color);
-  color: var(--text-color);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  min-height: 100vh;
-  padding: 20px;
-}
-
-.toggle-mode {
-  position: fixed;
-  top: 20px;
-  right: 20px;
-  background: var(--card-bg);
-  border: 1px solid var(--border-color);
-  padding: 8px 16px;
-  border-radius: 8px;
-  cursor: pointer;
-}
-
 h1 {
-  margin-bottom: 20px;
-  font-size: 2.5rem;
+  margin: 20px 0;
+}
+
+.dashboard-container {
+  max-width: 1400px;
+  margin: auto;
+  padding: 20px;
 }
 
 .calendar-container {
   display: flex;
-  gap: 20px;
-  margin-bottom: 40px;
-  padding: 20px;
-  border-radius: 12px;
-  background: var(--card-bg);
-  max-width: 1200px;
-  width: 100%;
   justify-content: center;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  gap: 40px;
+  margin-bottom: 30px;
+  transition: all 0.3s ease;
 }
 
-.calendar {
-  background: var(--card-bg);
-  border-radius: 8px;
-  padding: 20px;
-  flex: 1;
-}
-
-.calendar thead th {
-  color: var(--highlight-color);
-  font-size: 1.2rem;
-}
-
-.calendar thead tr:nth-child(2) th {
-  color: var(--text-color);
-  opacity: 0.6;
-}
-
-table {
-  width: 100%;
-  border-collapse: separate;
-  border-spacing: 8px;
-}
-
-th, td {
-  padding: 6px;
-  text-align: center;
-}
-
-.today {
-  color: var(--highlight-color);
-  font-weight: bold;
-}
-
-.bold-holiday {
-  font-weight: bold;
-}
-
-.tooltip {
-  position: relative;
-  display: inline-block;
-}
-
-.tooltip .tooltiptext {
-  visibility: hidden;
-  width: auto;
-  background-color: var(--text-color);
-  color: var(--bg-color);
-  text-align: center;
-  border-radius: 6px;
-  padding: 5px;
-  position: absolute;
-  z-index: 1;
-  bottom: 125%;
-  left: 50%;
-  transform: translateX(-50%);
-  opacity: 0;
-  transition: opacity 0.3s;
-  white-space: nowrap;
-}
-
-.tooltip:hover .tooltiptext {
-  visibility: visible;
-  opacity: 1;
-}
-
-.timezones {
+.clocks-container {
   display: flex;
   justify-content: center;
+  flex-wrap: wrap;
   gap: 20px;
-  margin-bottom: 40px;
-  max-width: 1200px;
-  width: 100%;
+  margin-bottom: 30px;
 }
 
-.clock {
-  background: var(--clock-bg);
-  border-radius: 12px;
-  padding: 16px;
-  text-align: center;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  flex: 1;
-  background-size: cover;
-  background-position: center;
-  color: #fff;
+.clock-card {
   position: relative;
+  background: rgba(255, 255, 255, 0.7);
+  border-radius: 15px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  padding: 15px;
+  width: 220px;
+  height: auto;
+  text-align: center;
+  transition: all 0.3s ease;
   overflow: hidden;
 }
 
-.clock::before {
-  content: '';
+.clock-card .city-flag {
   position: absolute;
   top: 0;
   left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.4);
-  z-index: 0;
+  right: 0;
+  bottom: 0;
+  background-size: cover;
+  background-position: center;
+  opacity: 0.12; /* soft flag background */
+  filter: grayscale(100%);
+  transition: opacity 0.3s ease;
 }
 
-.clock > * {
+.clock-card .city-name {
   position: relative;
+  font-size: 1.2em;
+  font-weight: bold;
+  margin-bottom: 5px;
   z-index: 1;
 }
 
-.clock .city {
+.clock-card .city-time {
+  position: relative;
+  font-size: 1.6em;
   font-weight: bold;
-  font-size: 1.4rem;
-  margin-bottom: 8px;
+  color: #e53935;
+  margin-bottom: 5px;
+  z-index: 1;
 }
 
-.clock .time {
-  font-weight: bold;
-  margin: 4px 0;
-  color: var(--highlight-color);
-  font-size: 1.8rem;
+.clock-card .city-sun {
+  position: relative;
+  font-size: 0.9em;
+  color: #333;
+  z-index: 1;
 }
 
-.clock .sunrise,
-.clock .sunset,
-.clock .daylength {
-  margin: 2px 0;
-  font-size: 0.85rem;
-}
-
-.comparison {
-  max-width: 1200px;
-  width: 100%;
+.timezone-container {
   overflow-x: auto;
-  position: relative;
-  margin-top: 40px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  margin-bottom: 30px;
 }
 
-.comparison-row {
-  display: flex;
-  align-items: center;
-  margin-bottom: 8px;
-}
-
-.city-name {
-  width: 120px;
-  font-weight: bold;
-  text-align: right;
-  padding-right: 10px;
-}
-
-.hour-block {
-  width: 80px;
-  height: 60px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  border: 1px solid var(--border-color);
-  position: relative;
-  font-size: 0.8rem;
-}
-
-.hour-block .icon {
-  font-size: 1rem;
-  margin-bottom: 4px;
-}
-
-.current-hour {
-  background-color: var(--highlight-bg);
-  font-weight: bold;
-}
-
-.holidays-container {
-  margin-top: 40px;
-  text-align: center;
-  max-width: 1200px;
-  width: 100%;
-  background: var(--card-bg);
-  border-radius: 8px;
-  padding: 20px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-}
-
-.holidays-list {
-  display: flex;
-  justify-content: space-around;
-  text-align: left;
-  margin-top: 10px;
-}
-
-.holidays-list div {
-  flex: 1;
-  padding: 0 10px;
-}
-
-.next-holiday {
-  margin-top: 20px;
-  font-weight: bold;
-  color: var(--highlight-color);
-}
-
-.important-dates-container {
-  margin-top: 40px;
-  text-align: center;
-  max-width: 1200px;
-  width: 100%;
-  background: var(--card-bg);
-  border-radius: 8px;
-  padding: 20px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-}
-
-.important-dates-table {
+.timezone-container table {
   width: 100%;
   border-collapse: collapse;
-  margin-top: 20px;
+  table-layout: fixed;
+  min-width: 1200px;
 }
 
-.important-dates-table th,
-.important-dates-table td {
-  border: 1px solid var(--border-color);
+.timezone-container th,
+.timezone-container td {
   padding: 8px;
+  border: 1px solid #ddd;
+  text-align: center;
+}
+
+.timezone-container th {
+  background-color: #f5f5f5;
+  font-weight: bold;
+}
+
+.timezone-container .highlight {
+  background-color: #ffe082;
+  font-weight: bold;
+}
+
+.important-dates-container,
+.holidays-container {
+  margin-top: 30px;
   text-align: left;
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
-.important-dates-table th {
-  background: var(--border-color);
+.important-dates-container table,
+.holidays-container table {
+  width: 100%;
+  border-collapse: collapse;
 }
 
-.important-dates-table a {
-  color: var(--highlight-color);
-  text-decoration: underline;
+.important-dates-container th,
+.holidays-container th,
+.important-dates-container td,
+.holidays-container td {
+  border: 1px solid #ddd;
+  padding: 8px;
+}
+
+.holiday-highlight {
+  font-weight: bold;
+  color: #e53935;
+}
+
+.calendar-container table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.calendar-container th,
+.calendar-container td {
+  padding: 8px;
+  text-align: center;
+  position: relative;
+}
+
+.calendar-container th {
+  font-weight: normal;
+  opacity: 0.6;
+}
+
+.calendar-container .holiday-highlight {
+  background-color: #ffe082;
+  border-radius: 50%;
+}
+
+.calendar-container .week-number {
+  opacity: 0.4;
+  font-size: 0.8em;
+}
+
+@media (max-width: 768px) {
+  .calendar-container {
+    flex-direction: column;
+    align-items: center;
+  }
 }
