@@ -1,52 +1,52 @@
 [
   {
-    "date": "2025-04-18",
-    "name": "Grace comes to Singapore",
+    "date": "18 April 2025",
+    "occasion": "Grace comes to Singapore",
     "notes": "Around 4pm"
   },
   {
-    "date": "2025-04-24",
-    "name": "Flight to Bangkok",
+    "date": "24 April 2025",
+    "occasion": "Flight to Bangkok",
     "notes": "08:00 AM, Terminal 2"
   },
   {
-    "date": "2025-04-27",
-    "name": "Flight to Singapore",
+    "date": "27 April 2025",
+    "occasion": "Flight to Singapore",
     "notes": "13:50, BKK-Suvarnabhumi Intl."
   },
   {
-    "date": "2025-04-28",
-    "name": "Grace goes back to New York",
+    "date": "28 April 2025",
+    "occasion": "Grace goes back to New York",
     "notes": "10:30 AM, Terminal 1"
   },
   {
-    "date": "2025-05-11",
-    "name": "Flight to London",
+    "date": "11 May 2025",
+    "occasion": "Flight to London",
     "notes": "SQ318 at 12:35 PM, Terminal 3 (Arrival at Heathrow)"
   },
   {
-    "date": "2025-05-25",
-    "name": "Flight to Singapore",
-    "notes": "SQ309 at 10:15 AM, London Gatwick"
+    "date": "25 May 2025",
+    "occasion": "Flight to Singapore",
+    "notes": "SQ309 at 10:15 AM (London Gatwick)"
   },
   {
-    "date": "2025-06-13",
-    "name": "Flight to Helsinki",
+    "date": "13 June 2025",
+    "occasion": "Flight to Helsinki",
     "notes": "21:35, Terminal 1"
   },
   {
-    "date": "2025-06-29",
-    "name": "Flight to Singapore",
-    "notes": "00:25, Friday night"
+    "date": "29 June 2025",
+    "occasion": "Flight to Singapore",
+    "notes": "00:25 NOTE THIS IS FRIDAY NIGHT BASICALLY"
   },
   {
-    "date": "2025-07-12",
-    "name": "Flight to New York",
+    "date": "12 July 2025",
+    "occasion": "Flight to New York",
     "notes": "SQ24 at 12:10 PM, Terminal 3"
   },
   {
-    "date": "2025-08-02",
-    "name": "Flight to Singapore",
+    "date": "2 August 2025",
+    "occasion": "Flight to Singapore",
     "notes": "SQ23, JFK at 22:15"
   }
 ]
