@@ -7,55 +7,41 @@
   <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
-  <div class="dashboard-container">
-    <h1>World Dashboard</h1>
+  <h1>World Dashboard</h1>
 
-    <!-- Calendar -->
-    <div id="calendar" class="calendar-container"></div>
+  <!-- Calendar -->
+  <div class="calendar-container" id="calendar"></div>
 
-    <!-- Clocks -->
-    <div class="clocks-container">
-      <div class="clock-card" id="newyork">
-        <div class="city-flag" style="background-image: url('flags/us.png');"></div>
-        <div class="city-name">NEW YORK</div>
-        <div class="city-time" id="time-newyork"></div>
-        <div class="city-sun" id="sun-newyork"></div>
-      </div>
-      <div class="clock-card" id="london">
-        <div class="city-flag" style="background-image: url('flags/uk.png');"></div>
-        <div class="city-name">LONDON</div>
-        <div class="city-time" id="time-london"></div>
-        <div class="city-sun" id="sun-london"></div>
-      </div>
-      <div class="clock-card" id="brussels">
-        <div class="city-flag" style="background-image: url('flags/brussels.png');"></div>
-        <div class="city-name">BRUSSELS</div>
-        <div class="city-time" id="time-brussels"></div>
-        <div class="city-sun" id="sun-brussels"></div>
-      </div>
-      <div class="clock-card" id="helsinki">
-        <div class="city-flag" style="background-image: url('flags/finland.png');"></div>
-        <div class="city-name">HELSINKI</div>
-        <div class="city-time" id="time-helsinki"></div>
-        <div class="city-sun" id="sun-helsinki"></div>
-      </div>
-      <div class="clock-card" id="singapore">
-        <div class="city-flag" style="background-image: url('flags/singapore.png');"></div>
-        <div class="city-name">SINGAPORE</div>
-        <div class="city-time" id="time-singapore"></div>
-        <div class="city-sun" id="sun-singapore"></div>
-      </div>
-    </div>
+  <!-- Clocks -->
+  <div class="clocks-container" id="clocks"></div>
 
-    <!-- Timezone Comparison Tool -->
-    <div id="timezone-tool" class="timezone-container"></div>
-
-    <!-- Important Dates -->
-    <div id="important-dates" class="important-dates-container"></div>
-
-    <!-- Holidays -->
-    <div id="holidays" class="holidays-container"></div>
+  <!-- Timezone Comparison -->
+  <div class="timezone-container" id="timezone">
+    <table>
+      <thead>
+        <tr>
+          <th></th>
+          <th>4:00</th><th>5:00</th><th>6:00</th><th>7:00</th><th>8:00</th><th>9:00</th>
+          <th>10:00</th><th>11:00</th><th>12:00</th><th>13:00</th><th>14:00</th><th>15:00</th>
+          <th>16:00</th><th>17:00</th><th>18:00</th><th>19:00</th><th>20:00</th><th>21:00</th>
+          <th>22:00</th><th>23:00</th><th>0:00</th><th>1:00</th><th>2:00</th><th>3:00</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>New York</td><td colspan="24">Loading...</td></tr>
+        <tr><td>London</td><td colspan="24">Loading...</td></tr>
+        <tr><td>Brussels</td><td colspan="24">Loading...</td></tr>
+        <tr><td>Helsinki</td><td colspan="24">Loading...</td></tr>
+        <tr><td>Singapore</td><td colspan="24">Loading...</td></tr>
+      </tbody>
+    </table>
   </div>
+
+  <!-- Important Dates -->
+  <div class="important-dates" id="important-dates"></div>
+
+  <!-- Bank Holidays -->
+  <div class="holidays" id="holidays"></div>
 
   <script src="js/main.js"></script>
 </body>
