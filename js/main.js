@@ -1,9 +1,9 @@
-// Toggle mode between light and dark
+// Toggle light/dark mode
 function toggleMode() {
   document.body.classList.toggle('dark-mode');
 }
 
-// Auto-refresh daily for sunrise/sunset and holidays updates
+// Smooth auto-refresh daily for sunrise/sunset and holidays
 setInterval(() => {
   const now = new Date();
   if (now.getHours() === 0 && now.getMinutes() === 0) {
@@ -12,12 +12,13 @@ setInterval(() => {
 }, 60000); // Check every minute
 
 // Utility functions
-function formatTime(date) {
-  return date.toLocaleTimeString('en-US', { hour: 'numeric', minute: 'numeric' });
+function formatDateDisplay(dateStr) {
+  const date = new Date(dateStr);
+  return date.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
 }
 
-function formatDate(date) {
-  return date.toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+function formatTime(date) {
+  return date.toLocaleTimeString('en-US', { hour: 'numeric', minute: 'numeric' });
 }
 
 function fetchJSON(url) {
@@ -36,6 +37,7 @@ async function loadClocks() {
   cities.forEach(async city => {
     const cityDiv = document.createElement('div');
     cityDiv.className = 'clock';
+    cityDiv.style.backgroundImage = `url('flags/${city.flag}')`;
 
     const cityName = document.createElement('div');
     cityName.className = 'city';
@@ -45,10 +47,6 @@ async function loadClocks() {
     const timeEl = document.createElement('div');
     timeEl.className = 'time';
     cityDiv.appendChild(timeEl);
-
-    const dateEl = document.createElement('div');
-    dateEl.className = 'date';
-    cityDiv.appendChild(dateEl);
 
     const sunriseEl = document.createElement('div');
     sunriseEl.className = 'sunrise';
@@ -68,7 +66,6 @@ async function loadClocks() {
       const now = new Date();
       const cityTime = new Date(now.toLocaleString('en-US', { timeZone: city.timezone }));
       timeEl.textContent = formatTime(cityTime);
-      dateEl.textContent = formatDate(cityTime);
 
       try {
         const response = await fetch(`https://api.sunrise-sunset.org/json?lat=${city.lat}&lng=${city.lng}&formatted=0`);
@@ -120,18 +117,30 @@ async function loadHolidays() {
   highlightNextHoliday();
 }
 
-// Render holidays under the clocks
+// Render holidays in bottom section
 function renderHolidays() {
   const holidaysList = document.getElementById('holidays-list');
   holidaysList.innerHTML = '';
 
-  holidays.sort((a, b) => new Date(a.date) - new Date(b.date));
+  const byCountry = {
+    'United States 🇺🇸': [],
+    'United Kingdom 🇬🇧': [],
+    'Singapore 🇸🇬': []
+  };
 
-  holidays.forEach(holiday => {
-    const holidayEl = document.createElement('div');
-    holidayEl.textContent = `${holiday.date} — ${holiday.name} (${holiday.country})`;
-    holidaysList.appendChild(holidayEl);
+  holidays.forEach(h => {
+    byCountry[h.country].push(h);
   });
+
+  for (const country in byCountry) {
+    const countryDiv = document.createElement('div');
+    byCountry[country].sort((a, b) => new Date(a.date) - new Date(b.date)).forEach(holiday => {
+      const holidayEl = document.createElement('div');
+      holidayEl.textContent = `${formatDateDisplay(holiday.date)} - ${holiday.name}`;
+      countryDiv.appendChild(holidayEl);
+    });
+    holidaysList.appendChild(countryDiv);
+  }
 }
 
 // Highlight next upcoming holiday
@@ -141,7 +150,7 @@ function highlightNextHoliday() {
 
   const nextHolidayEl = document.getElementById('next-holiday');
   if (nextHoliday) {
-    nextHolidayEl.textContent = `Next Holiday: ${nextHoliday.date} — ${nextHoliday.name} (${nextHoliday.country})`;
+    nextHolidayEl.textContent = `Next Holiday: ${formatDateDisplay(nextHoliday.date)} — ${nextHoliday.name} (${nextHoliday.country})`;
   } else {
     nextHolidayEl.textContent = 'No upcoming holidays';
   }
@@ -175,15 +184,15 @@ function buildCalendar() {
     const lastDate = new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
 
     let dayCounter = 1;
-    let startOffset = (firstDay.getDay() + 6) % 7; // Make Monday first day
+    let startOffset = (firstDay.getDay() + 6) % 7;
 
     while (dayCounter <= lastDate) {
       const row = document.createElement('tr');
 
-      // Week number
       const weekNumber = getWeekNumber(new Date(date.getFullYear(), date.getMonth(), dayCounter));
       const weekCell = document.createElement('td');
       weekCell.textContent = weekNumber;
+      weekCell.style.opacity = '0.5';
       row.appendChild(weekCell);
 
       for (let i = 0; i < 7; i++) {
@@ -240,7 +249,7 @@ async function buildComparison() {
     row.appendChild(cityName);
 
     const currentHour = new Date(now.toLocaleString('en-US', { timeZone: city.timezone })).getHours();
-    for (let i = -6; i <= 6; i++) {
+    for (let i = -8; i <= 8; i++) {
       const block = document.createElement('div');
       block.className = 'hour-block';
       const blockHour = (currentHour + i + 24) % 24;
@@ -253,13 +262,31 @@ async function buildComparison() {
   });
 }
 
+// Load Important Dates
+async function loadImportantDates() {
+  const data = await fetchJSON('data/important-dates.json');
+  const tableBody = document.querySelector('#important-dates-table tbody');
+  tableBody.innerHTML = '';
+
+  data.sort((a, b) => new Date(a.date) - new Date(b.date)).forEach(item => {
+    const row = document.createElement('tr');
+    row.innerHTML = `
+      <td>${formatDateDisplay(item.date)}</td>
+      <td>${item.name}</td>
+      <td><a href="${item.notes}" target="_blank">${item.notes}</a></td>
+    `;
+    tableBody.appendChild(row);
+  });
+}
+
 // Initialize dashboard
 function initializeDashboard() {
   buildCalendar();
   loadClocks();
   buildComparison();
   loadHolidays();
+  loadImportantDates();
 }
 
 initializeDashboard();
-setInterval(initializeDashboard, 60000); // Refresh every minute
+setInterval(initializeDashboard, 60000);
