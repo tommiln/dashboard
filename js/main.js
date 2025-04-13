@@ -1,292 +1,148 @@
-// Toggle light/dark mode
-function toggleMode() {
-  document.body.classList.toggle('dark-mode');
-}
+const cities = [
+  { name: "New York", timezone: "America/New_York", flag: "flags/us.png" },
+  { name: "London", timezone: "Europe/London", flag: "flags/uk.png" },
+  { name: "Brussels", timezone: "Europe/Brussels", flag: "flags/brussels.png" },
+  { name: "Helsinki", timezone: "Europe/Helsinki", flag: "flags/finland.png" },
+  { name: "Singapore", timezone: "Asia/Singapore", flag: "flags/singapore.png" },
+];
 
-// Smooth auto-refresh daily for sunrise/sunset and holidays
-setInterval(() => {
+const holidays = {
+  "United States": [
+    { date: "1 January 2025", name: "New Year's Day" },
+    { date: "20 January 2025", name: "Martin Luther King, Jr. Day" },
+    { date: "12 February 2025", name: "Lincoln's Birthday" },
+    { date: "17 February 2025", name: "Washington's Birthday" },
+    { date: "26 May 2025", name: "Memorial Day" },
+    { date: "4 July 2025", name: "Independence Day" },
+    { date: "1 September 2025", name: "Labour Day" },
+    { date: "13 October 2025", name: "Columbus Day" },
+    { date: "11 November 2025", name: "Veterans Day" },
+    { date: "27 November 2025", name: "Thanksgiving Day" },
+    { date: "25 December 2025", name: "Christmas Day" },
+  ],
+  "United Kingdom": [
+    { date: "1 January 2025", name: "New Year's Day" },
+    { date: "2 January 2025", name: "2 January" },
+    { date: "17 March 2025", name: "Saint Patrick's Day" },
+    { date: "18 April 2025", name: "Good Friday" },
+    { date: "21 April 2025", name: "Easter Monday" },
+    { date: "5 May 2025", name: "Early May Bank Holiday" },
+    { date: "4 August 2025", name: "Summer Bank Holiday" },
+    { date: "25 August 2025", name: "Summer Bank Holiday" },
+    { date: "25 December 2025", name: "Christmas Day" },
+    { date: "26 December 2025", name: "Boxing Day" },
+  ],
+  "Singapore": [
+    { date: "1 January 2025", name: "New Year's Day" },
+    { date: "29 January 2025", name: "Chinese New Year" },
+    { date: "30 January 2025", name: "Chinese New Year" },
+    { date: "31 March 2025", name: "Hari Raya Puasa" },
+    { date: "18 April 2025", name: "Good Friday" },
+    { date: "1 May 2025", name: "Labour Day" },
+    { date: "12 May 2025", name: "Vesak Day" },
+    { date: "9 August 2025", name: "National Day" },
+    { date: "21 October 2025", name: "Deepavali" },
+    { date: "25 December 2025", name: "Christmas Day" },
+  ],
+};
+
+const importantDates = [
+  { date: "18 April 2025", occasion: "Grace comes to Singapore", notes: "Around 4pm" },
+  { date: "24 April 2025", occasion: "Flight to Bangkok", notes: "08:00 AM, Terminal 2" },
+  { date: "27 April 2025", occasion: "Flight to Singapore", notes: "13:50, BKK-Suvarnabhumi Intl." },
+  { date: "28 April 2025", occasion: "Grace goes back to New York", notes: "10:30 AM, Terminal 1" },
+  { date: "11 May 2025", occasion: "Flight to London", notes: "SQ318 at 12:35 PM, Terminal 3 (Arrival at Heathrow)" },
+  { date: "25 May 2025", occasion: "Flight to Singapore", notes: "SQ309 at 10:15 AM (London Gatwick)" },
+  { date: "13 June 2025", occasion: "Flight to Helsinki", notes: "21:35, Terminal 1" },
+  { date: "29 June 2025", occasion: "Flight to Singapore", notes: "00:25 NOTE THIS IS FRIDAY NIGHT BASICALLY" },
+  { date: "12 July 2025", occasion: "Flight to New York", notes: "SQ24 at 12:10 PM, Terminal 3" },
+  { date: "2 August 2025", occasion: "Flight to Singapore", notes: "SQ23, JFK at 22:15" },
+];
+
+function updateClocks() {
   const now = new Date();
-  if (now.getHours() === 0 && now.getMinutes() === 0) {
-    location.reload();
-  }
-}, 60000); // Check every minute
-
-// Utility functions
-function formatDateDisplay(dateStr) {
-  const date = new Date(dateStr);
-  return date.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
-}
-
-function formatTime(date) {
-  return date.toLocaleTimeString('en-US', { hour: 'numeric', minute: 'numeric' });
-}
-
-function fetchJSON(url) {
-  return fetch(url).then(response => response.json());
-}
-
-// Holidays storage
-let holidays = [];
-
-// Load cities data and build clocks
-async function loadClocks() {
-  const cities = await fetchJSON('data/cities.json');
-  const timezones = document.getElementById('timezones');
-  timezones.innerHTML = '';
-
-  cities.forEach(async city => {
-    const cityDiv = document.createElement('div');
-    cityDiv.className = 'clock';
-    cityDiv.style.backgroundImage = `url('flags/${city.flag}')`;
-
-    const cityName = document.createElement('div');
-    cityName.className = 'city';
-    cityName.textContent = city.name.toUpperCase();
-    cityDiv.appendChild(cityName);
-
-    const timeEl = document.createElement('div');
-    timeEl.className = 'time';
-    cityDiv.appendChild(timeEl);
-
-    const sunriseEl = document.createElement('div');
-    sunriseEl.className = 'sunrise';
-    cityDiv.appendChild(sunriseEl);
-
-    const sunsetEl = document.createElement('div');
-    sunsetEl.className = 'sunset';
-    cityDiv.appendChild(sunsetEl);
-
-    const daylengthEl = document.createElement('div');
-    daylengthEl.className = 'daylength';
-    cityDiv.appendChild(daylengthEl);
-
-    timezones.appendChild(cityDiv);
-
-    async function updateClock() {
-      const now = new Date();
-      const cityTime = new Date(now.toLocaleString('en-US', { timeZone: city.timezone }));
-      timeEl.textContent = formatTime(cityTime);
-
-      try {
-        const response = await fetch(`https://api.sunrise-sunset.org/json?lat=${city.lat}&lng=${city.lng}&formatted=0`);
-        const data = await response.json();
-
-        const sunrise = new Date(data.results.sunrise);
-        const sunset = new Date(data.results.sunset);
-
-        sunriseEl.textContent = `Sunrise: ${formatTime(sunrise)}`;
-        sunsetEl.textContent = `Sunset: ${formatTime(sunset)}`;
-
-        const dayLengthSeconds = data.results.day_length;
-        const hours = Math.floor(dayLengthSeconds / 3600);
-        const minutes = Math.floor((dayLengthSeconds % 3600) / 60);
-        daylengthEl.textContent = `Day length: ${hours}h ${minutes}m`;
-      } catch (e) {
-        sunriseEl.textContent = 'Sunrise: N/A';
-        sunsetEl.textContent = 'Sunset: N/A';
-        daylengthEl.textContent = 'Day length: N/A';
-      }
-    }
-
-    updateClock();
-    setInterval(updateClock, 60000);
-  });
-}
-
-// Load holidays
-async function loadHolidays() {
-  const currentYear = new Date().getFullYear();
-  const endpoints = [
-    { country: 'us', name: 'United States 🇺🇸' },
-    { country: 'gb', name: 'United Kingdom 🇬🇧' },
-    { country: 'sg', name: 'Singapore 🇸🇬' }
-  ];
-
-  holidays = [];
-
-  for (const { country, name } of endpoints) {
-    const response = await fetch(`https://date.nager.at/api/v3/PublicHolidays/${currentYear}/${country}`);
-    const data = await response.json();
-
-    data.forEach(holiday => {
-      holidays.push({ date: holiday.date, name: holiday.localName, country: name });
-    });
-  }
-
-  renderHolidays();
-  highlightNextHoliday();
-}
-
-// Render holidays in bottom section
-function renderHolidays() {
-  const holidaysList = document.getElementById('holidays-list');
-  holidaysList.innerHTML = '';
-
-  const byCountry = {
-    'United States 🇺🇸': [],
-    'United Kingdom 🇬🇧': [],
-    'Singapore 🇸🇬': []
-  };
-
-  holidays.forEach(h => {
-    byCountry[h.country].push(h);
-  });
-
-  for (const country in byCountry) {
-    const countryDiv = document.createElement('div');
-    byCountry[country].sort((a, b) => new Date(a.date) - new Date(b.date)).forEach(holiday => {
-      const holidayEl = document.createElement('div');
-      holidayEl.textContent = `${formatDateDisplay(holiday.date)} - ${holiday.name}`;
-      countryDiv.appendChild(holidayEl);
-    });
-    holidaysList.appendChild(countryDiv);
-  }
-}
-
-// Highlight next upcoming holiday
-function highlightNextHoliday() {
-  const now = new Date();
-  const nextHoliday = holidays.find(h => new Date(h.date) >= now);
-
-  const nextHolidayEl = document.getElementById('next-holiday');
-  if (nextHoliday) {
-    nextHolidayEl.textContent = `Next Holiday: ${formatDateDisplay(nextHoliday.date)} — ${nextHoliday.name} (${nextHoliday.country})`;
-  } else {
-    nextHolidayEl.textContent = 'No upcoming holidays';
-  }
-}
-
-// Build calendar
-function buildCalendar() {
-  const container = document.getElementById('calendar-container');
-  container.innerHTML = '';
-
-  const months = [-1, 0, 1];
-  const today = new Date();
-
-  months.forEach(offset => {
-    const date = new Date(today.getFullYear(), today.getMonth() + offset, 1);
-    const monthName = date.toLocaleString('default', { month: 'long' });
-    const year = date.getFullYear();
-
-    const div = document.createElement('div');
-    div.className = 'calendar';
-
-    const table = document.createElement('table');
-
-    const header = document.createElement('thead');
-    header.innerHTML = `<tr><th colspan="8">${monthName} ${year}</th></tr><tr><th>Wk</th>${['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map(d => `<th>${d}</th>`).join('')}</tr>`;
-    table.appendChild(header);
-
-    const body = document.createElement('tbody');
-
-    const firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
-    const lastDate = new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
-
-    let dayCounter = 1;
-    let startOffset = (firstDay.getDay() + 6) % 7;
-
-    while (dayCounter <= lastDate) {
-      const row = document.createElement('tr');
-
-      const weekNumber = getWeekNumber(new Date(date.getFullYear(), date.getMonth(), dayCounter));
-      const weekCell = document.createElement('td');
-      weekCell.textContent = weekNumber;
-      weekCell.style.opacity = '0.5';
-      row.appendChild(weekCell);
-
-      for (let i = 0; i < 7; i++) {
-        const cell = document.createElement('td');
-        const cellDate = new Date(date.getFullYear(), date.getMonth(), dayCounter);
-
-        if ((dayCounter === 1 && i >= startOffset) || (dayCounter > 1 && dayCounter <= lastDate)) {
-          const holiday = holidays.find(h => h.date === cellDate.toISOString().split('T')[0]);
-          if (cellDate.toDateString() === today.toDateString()) {
-            cell.innerHTML = `<span class="today">${dayCounter}</span>`;
-          } else if (holiday) {
-            cell.innerHTML = `<div class="tooltip bold-holiday">${dayCounter}<span class="tooltiptext">${holiday.name} (${holiday.country})</span></div>`;
-          } else {
-            cell.textContent = dayCounter;
-          }
-          dayCounter++;
-        }
-
-        row.appendChild(cell);
-      }
-
-      body.appendChild(row);
-    }
-
-    table.appendChild(body);
-    div.appendChild(table);
-    container.appendChild(div);
-  });
-}
-
-// Get ISO week number
-function getWeekNumber(d) {
-  d = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
-  d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay() || 7));
-  const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
-  return Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
-}
-
-// Build time comparison tool
-async function buildComparison() {
-  const container = document.getElementById('comparison');
-  container.innerHTML = '';
-
-  const cities = await fetchJSON('data/cities.json');
-  const now = new Date();
-
   cities.forEach(city => {
-    const row = document.createElement('div');
-    row.className = 'comparison-row';
+    const cityTime = new Intl.DateTimeFormat('en-GB', {
+      timeZone: city.timezone,
+      hour: 'numeric',
+      minute: 'numeric',
+      hour12: true
+    }).format(now);
 
-    const cityName = document.createElement('div');
-    cityName.className = 'city-name';
-    cityName.textContent = city.name;
-    row.appendChild(cityName);
-
-    const currentHour = new Date(now.toLocaleString('en-US', { timeZone: city.timezone })).getHours();
-    for (let i = -8; i <= 8; i++) {
-      const block = document.createElement('div');
-      block.className = 'hour-block';
-      const blockHour = (currentHour + i + 24) % 24;
-      block.innerHTML = `<div class="icon">${blockHour >= 6 && blockHour < 18 ? '☀️' : '🌙'}</div>${blockHour}:00`;
-      if (i === 0) block.classList.add('current-hour');
-      row.appendChild(block);
-    }
-
-    container.appendChild(row);
+    document.getElementById(`${city.name}-time`).textContent = cityTime;
   });
 }
 
-// Load Important Dates
-async function loadImportantDates() {
-  const data = await fetchJSON('data/important-dates.json');
-  const tableBody = document.querySelector('#important-dates-table tbody');
-  tableBody.innerHTML = '';
+function renderClocks() {
+  const container = document.getElementById("clocks");
+  container.innerHTML = "";
+  cities.forEach(city => {
+    const card = document.createElement("div");
+    card.className = "clock-card";
+    card.style.backgroundImage = `url(${city.flag})`;
 
-  data.sort((a, b) => new Date(a.date) - new Date(b.date)).forEach(item => {
-    const row = document.createElement('tr');
-    row.innerHTML = `
-      <td>${formatDateDisplay(item.date)}</td>
-      <td>${item.name}</td>
-      <td><a href="${item.notes}" target="_blank">${item.notes}</a></td>
+    card.innerHTML = `
+      <div class="city-flag" style="background-image: url(${city.flag});"></div>
+      <div class="city-name">${city.name.toUpperCase()}</div>
+      <div class="city-time" id="${city.name}-time">Loading...</div>
+      <div class="city-sun" id="${city.name}-sun">Sunrise: N/A<br>Sunset: N/A<br>Day length: N/A</div>
     `;
-    tableBody.appendChild(row);
+
+    container.appendChild(card);
   });
 }
 
-// Initialize dashboard
-function initializeDashboard() {
-  buildCalendar();
-  loadClocks();
-  buildComparison();
-  loadHolidays();
-  loadImportantDates();
+function highlightTimeZone() {
+  const now = new Date();
+  const currentHour = now.getUTCHours();
+  const timeCells = document.querySelectorAll(".timezone-container td");
+
+  timeCells.forEach(cell => {
+    cell.classList.remove("highlight");
+  });
+
+  const headers = document.querySelectorAll(".timezone-container th");
+  headers.forEach((header, index) => {
+    if (header.textContent.includes(`${currentHour}:00`)) {
+      document.querySelectorAll(`.timezone-container td:nth-child(${index + 1})`).forEach(cell => {
+        cell.classList.add("highlight");
+      });
+    }
+  });
 }
 
-initializeDashboard();
-setInterval(initializeDashboard, 60000);
+function renderImportantDates() {
+  const container = document.getElementById("important-dates");
+  container.innerHTML = "<h3>Important Dates</h3><table><tr><th>Date</th><th>Special Occasion</th><th>Notes</th></tr>";
+
+  importantDates.forEach(event => {
+    container.innerHTML += `<tr><td>${event.date}</td><td>${event.occasion}</td><td>${event.notes}</td></tr>`;
+  });
+
+  container.innerHTML += "</table>";
+}
+
+function renderHolidays() {
+  const container = document.getElementById("holidays");
+  container.innerHTML = "<h3>Bank Holidays (US 🇺🇸, UK 🇬🇧, Singapore 🇸🇬)</h3><table><tr><th>Date</th><th>Holiday</th><th>Country</th></tr>";
+
+  Object.entries(holidays).forEach(([country, list]) => {
+    list.forEach(event => {
+      container.innerHTML += `<tr><td>${event.date}</td><td>${event.name}</td><td>${country}</td></tr>`;
+    });
+  });
+
+  container.innerHTML += "</table>";
+}
+
+function initialize() {
+  renderClocks();
+  renderImportantDates();
+  renderHolidays();
+  updateClocks();
+  highlightTimeZone();
+  setInterval(updateClocks, 60000);
+  setInterval(highlightTimeZone, 60000);
+}
+
+document.addEventListener("DOMContentLoaded", initialize);
