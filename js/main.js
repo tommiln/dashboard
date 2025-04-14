@@ -1,173 +1,181 @@
-async function fetchData(url) {
-  const response = await fetch(url);
-  if (!response.ok) {
-    throw new Error(`Failed to fetch ${url}: ${response.statusText}`);
-  }
-  return response.json();
+// Utility Functions
+function fetchJSON(path) {
+    return fetch(path).then(response => response.json());
 }
 
-// Clock data
-async function loadClocks() {
-  const container = document.querySelector(".clock-container");
-  container.innerHTML = "";
-
-  const cities = await fetchData("data/cities.json");
-
-  cities.forEach((city) => {
-    const card = document.createElement("div");
-    card.className = "clock";
-
-    const title = document.createElement("h3");
-    title.textContent = city.name;
-
-    const time = document.createElement("div");
-    time.className = "time";
-    time.textContent = "Loading...";
-
-    const details = document.createElement("div");
-    details.className = "details";
-    details.innerHTML = `
-      Sunrise: N/A<br>
-      Sunset: N/A<br>
-      Day length: N/A
-    `;
-
-    card.appendChild(title);
-    card.appendChild(time);
-    card.appendChild(details);
-    container.appendChild(card);
-
-    function updateClock() {
-      const now = new Date();
-      const localTime = new Date(now.toLocaleString("en-US", { timeZone: city.timezone }));
-      const hours = localTime.getHours();
-      const minutes = localTime.getMinutes().toString().padStart(2, "0");
-      const ampm = hours >= 12 ? "PM" : "AM";
-      const displayHours = hours % 12 || 12;
-
-      time.textContent = `${displayHours}:${minutes} ${ampm}`;
-    }
-
-    updateClock();
-    setInterval(updateClock, 60000);
-  });
+function formatTime(date) {
+    return date.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
 }
 
-// Calendar
-function loadCalendar() {
-  const container = document.getElementById("calendar");
-  container.innerHTML = "";
+function formatDate(date) {
+    return date.toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+}
 
-  const today = new Date();
-  const monthsToShow = 3;
-  const startMonth = new Date(today.getFullYear(), today.getMonth() - 1, 1);
+function formatDuration(ms) {
+    const totalMinutes = Math.floor(ms / 60000);
+    const hours = Math.floor(totalMinutes / 60);
+    const minutes = totalMinutes % 60;
+    return `${hours}h ${minutes}m`;
+}
 
-  for (let m = 0; m < monthsToShow; m++) {
-    const monthDate = new Date(startMonth.getFullYear(), startMonth.getMonth() + m, 1);
-    const monthContainer = document.createElement("div");
-    monthContainer.className = "calendar-month";
+function getIcon(hour) {
+    return (hour >= 6 && hour < 18) ? '☀️' : '🌙';
+}
 
-    const title = document.createElement("h3");
-    title.textContent = monthDate.toLocaleString("default", { month: "long", year: "numeric" });
-    monthContainer.appendChild(title);
+// Populate Calendar
+function populateCalendar() {
+    const container = document.getElementById('calendar');
+    const today = new Date();
+    const currentMonth = today.getMonth();
+    const currentYear = today.getFullYear();
 
-    const table = document.createElement("table");
-    const headerRow = document.createElement("tr");
-    ["Wk", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].forEach(day => {
-      const th = document.createElement("th");
-      th.textContent = day;
-      headerRow.appendChild(th);
-    });
-    table.appendChild(headerRow);
+    const months = [currentMonth - 1, currentMonth, currentMonth + 1];
+    container.innerHTML = '';
 
-    const firstDay = new Date(monthDate.getFullYear(), monthDate.getMonth(), 1);
-    const lastDay = new Date(monthDate.getFullYear(), monthDate.getMonth() + 1, 0);
+    months.forEach(monthOffset => {
+        const date = new Date(currentYear, monthOffset);
+        const monthName = date.toLocaleString('default', { month: 'long' });
+        const year = date.getFullYear();
 
-    let date = new Date(firstDay);
-    date.setDate(date.getDate() - ((date.getDay() + 6) % 7));
+        const table = document.createElement('table');
+        const caption = document.createElement('caption');
+        caption.textContent = `${monthName} ${year}`;
+        table.appendChild(caption);
 
-    while (date <= lastDay || date.getDay() !== 1) {
-      const row = document.createElement("tr");
+        const header = table.insertRow();
+        ['Wk', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].forEach(text => {
+            const th = document.createElement('th');
+            th.textContent = text;
+            header.appendChild(th);
+        });
 
-      const weekNumberCell = document.createElement("td");
-      weekNumberCell.textContent = getWeekNumber(date);
-      row.appendChild(weekNumberCell);
+        let firstDay = new Date(year, date.getMonth(), 1);
+        let day = new Date(firstDay);
+        day.setDate(day.getDate() - ((day.getDay() + 6) % 7));
 
-      for (let d = 0; d < 7; d++) {
-        const cell = document.createElement("td");
+        while (day.getMonth() <= date.getMonth() || day.getDay() !== 1) {
+            const row = table.insertRow();
+            const weekNumber = Math.ceil((((day - new Date(day.getFullYear(), 0, 1)) / 86400000) + new Date(day.getFullYear(), 0, 1).getDay() + 1) / 7);
+            const weekCell = row.insertCell();
+            weekCell.textContent = weekNumber;
 
-        if (date.getMonth() === monthDate.getMonth()) {
-          cell.textContent = date.getDate();
-          if (isToday(date)) {
-            cell.classList.add("today");
-          }
+            for (let i = 0; i < 7; i++) {
+                const cell = row.insertCell();
+                cell.textContent = day.getDate();
+                if (day.getMonth() !== date.getMonth()) {
+                    cell.style.opacity = '0.3';
+                }
+                day.setDate(day.getDate() + 1);
+            }
         }
 
-        row.appendChild(cell);
-        date.setDate(date.getDate() + 1);
-      }
+        container.appendChild(table);
+    });
+}
 
-      table.appendChild(row);
+// Populate Clocks
+function populateClocks(cities) {
+    const container = document.getElementById('clocks');
+    container.innerHTML = '';
+
+    cities.forEach(city => {
+        const div = document.createElement('div');
+        div.className = 'clock';
+        div.style.backgroundImage = `url('./flags/${city.image}')`;
+
+        div.innerHTML = `
+            <h2>${city.name.toUpperCase()}</h2>
+            <div class="time">Loading...</div>
+            <div class="details">
+                Sunrise: N/A<br>
+                Sunset: N/A<br>
+                Day length: N/A
+            </div>
+        `;
+
+        container.appendChild(div);
+
+        setInterval(() => {
+            const now = new Date();
+            const localTime = new Date(now.toLocaleString('en-US', { timeZone: city.timezone }));
+            div.querySelector('.time').textContent = formatTime(localTime);
+        }, 1000);
+    });
+}
+
+// Populate Timezone Table
+function populateTimezoneComparison(cities) {
+    const container = document.getElementById('timezone');
+    container.innerHTML = '';
+
+    const table = document.createElement('table');
+    table.className = 'timezone-table';
+
+    const headerRow = table.insertRow();
+    const firstCell = headerRow.insertCell();
+    firstCell.textContent = '';
+
+    const currentTime = new Date();
+    const currentHour = currentTime.getHours();
+
+    for (let hour = 0; hour < 24; hour++) {
+        const cell = headerRow.insertCell();
+        const displayHour = (hour === 0) ? '0:00' : `${hour}:00`;
+        cell.textContent = displayHour;
     }
 
-    monthContainer.appendChild(table);
-    container.appendChild(monthContainer);
-  }
+    cities.forEach(city => {
+        const row = table.insertRow();
+        const labelCell = row.insertCell();
+        labelCell.textContent = city.name;
+
+        const now = new Date();
+        const cityTime = new Date(now.toLocaleString('en-US', { timeZone: city.timezone }));
+        const cityHour = cityTime.getHours();
+
+        for (let hour = 0; hour < 24; hour++) {
+            const cell = row.insertCell();
+            const hourOffset = (hour + cityHour + 24) % 24;
+            cell.textContent = `${getIcon(hourOffset)} ${hourOffset}:00`;
+
+            if (hour === currentHour) {
+                cell.classList.add('current-hour');
+            }
+        }
+    });
+
+    container.appendChild(table);
 }
 
-function getWeekNumber(date) {
-  const firstDayOfYear = new Date(date.getFullYear(), 0, 1);
-  const pastDaysOfYear = (date - firstDayOfYear) / 86400000;
-  return Math.ceil((pastDaysOfYear + firstDayOfYear.getDay() + 1) / 7);
+// Populate Important Dates
+function populateImportantDates(dates) {
+    const container = document.getElementById('important-dates');
+    container.innerHTML = '';
+
+    const table = document.createElement('table');
+    const headerRow = table.insertRow();
+    ['Date', 'Special Occasion', 'Notes'].forEach(text => {
+        const th = document.createElement('th');
+        th.textContent = text;
+        headerRow.appendChild(th);
+    });
+
+    dates.forEach(event => {
+        const row = table.insertRow();
+        row.insertCell().textContent = event.date;
+        row.insertCell().textContent = event.occasion;
+        row.insertCell().textContent = event.notes;
+    });
+
+    container.appendChild(table);
 }
 
-function isToday(date) {
-  const today = new Date();
-  return date.getFullYear() === today.getFullYear() &&
-    date.getMonth() === today.getMonth() &&
-    date.getDate() === today.getDate();
-}
-
-// Important Dates
-async function loadImportantDates() {
-  const container = document.getElementById("important-dates");
-  const data = await fetchData("data/important-dates.json");
-
-  const table = document.createElement("table");
-
-  const headerRow = document.createElement("tr");
-  ["Date", "Special Occasion", "Notes"].forEach(header => {
-    const th = document.createElement("th");
-    th.textContent = header;
-    headerRow.appendChild(th);
-  });
-  table.appendChild(headerRow);
-
-  data.forEach(item => {
-    const row = document.createElement("tr");
-
-    const dateCell = document.createElement("td");
-    dateCell.textContent = item.date;
-    row.appendChild(dateCell);
-
-    const occasionCell = document.createElement("td");
-    occasionCell.textContent = item.occasion;
-    row.appendChild(occasionCell);
-
-    const notesCell = document.createElement("td");
-    notesCell.textContent = item.notes;
-    row.appendChild(notesCell);
-
-    table.appendChild(row);
-  });
-
-  container.innerHTML = "";
-  container.appendChild(table);
-}
-
-// Initialize
-document.addEventListener("DOMContentLoaded", () => {
-  loadClocks();
-  loadCalendar();
-  loadImportantDates();
-});
+// Init
+Promise.all([fetchJSON('./data/cities.json'), fetchJSON('./data/important-dates.json')])
+    .then(([cities, importantDates]) => {
+        populateCalendar();
+        populateClocks(cities);
+        populateTimezoneComparison(cities);
+        populateImportantDates(importantDates);
+    })
+    .catch(error => console.error('Error loading data:', error));
