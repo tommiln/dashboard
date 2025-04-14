@@ -1,7 +1,7 @@
 [
-  { "name": "New York", "timezone": "America/New_York", "flag": "us.png" },
-  { "name": "London", "timezone": "Europe/London", "flag": "uk.png" },
-  { "name": "Brussels", "timezone": "Europe/Brussels", "flag": "brussels.png" },
-  { "name": "Helsinki", "timezone": "Europe/Helsinki", "flag": "finland.png" },
-  { "name": "Singapore", "timezone": "Asia/Singapore", "flag": "singapore.png" }
+  { "name": "New York", "timezone": "America/New_York", "image": "us.jpeg" },
+  { "name": "London", "timezone": "Europe/London", "image": "uk.jpeg" },
+  { "name": "Brussels", "timezone": "Europe/Brussels", "image": "brussels.jpeg" },
+  { "name": "Helsinki", "timezone": "Europe/Helsinki", "image": "finland.jpeg" },
+  { "name": "Singapore", "timezone": "Asia/Singapore", "image": "singapore.jpeg" }
 ]
