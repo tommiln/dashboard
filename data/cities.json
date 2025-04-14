@@ -1,37 +1,7 @@
 [
-  {
-    "name": "New York",
-    "timezone": "America/New_York",
-    "lat": 40.7128,
-    "lng": -74.0060,
-    "flag": "us.png"
-  },
-  {
-    "name": "London",
-    "timezone": "Europe/London",
-    "lat": 51.5074,
-    "lng": -0.1278,
-    "flag": "uk.png"
-  },
-  {
-    "name": "Brussels",
-    "timezone": "Europe/Brussels",
-    "lat": 50.8503,
-    "lng": 4.3517,
-    "flag": "brussels.png"
-  },
-  {
-    "name": "Helsinki",
-    "timezone": "Europe/Helsinki",
-    "lat": 60.1699,
-    "lng": 24.9384,
-    "flag": "finland.png"
-  },
-  {
-    "name": "Singapore",
-    "timezone": "Asia/Singapore",
-    "lat": 1.3521,
-    "lng": 103.8198,
-    "flag": "singapore.png"
-  }
+  { "name": "New York", "timezone": "America/New_York", "flag": "us.png" },
+  { "name": "London", "timezone": "Europe/London", "flag": "uk.png" },
+  { "name": "Brussels", "timezone": "Europe/Brussels", "flag": "brussels.png" },
+  { "name": "Helsinki", "timezone": "Europe/Helsinki", "flag": "finland.png" },
+  { "name": "Singapore", "timezone": "Asia/Singapore", "flag": "singapore.png" }
 ]
