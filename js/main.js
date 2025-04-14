@@ -1,80 +1,176 @@
-// Utility to fetch JSON files
-async function loadJSON(path) {
-  const response = await fetch(path);
-  if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-  return await response.json();
+async function fetchData(url) {
+  const response = await fetch(url);
+  if (!response.ok) {
+    throw new Error(`Failed to fetch ${url}: ${response.statusText}`);
+  }
+  return response.json();
 }
 
-// Display clocks
-function displayClocks(cities) {
-  const container = document.getElementById('clocks');
-  container.innerHTML = '';
-  cities.forEach(city => {
-    const clock = document.createElement('div');
-    clock.className = 'clock';
-    clock.style.setProperty('--flag', `url('flags/${city.flag}')`);
-    clock.innerHTML = `
-      <h2>${city.name.toUpperCase()}</h2>
-      <div class="time">Loading...</div>
-      <p>Sunrise: N/A</p>
-      <p>Sunset: N/A</p>
-      <p>Day length: N/A</p>
+// Clock data
+async function loadClocks() {
+  const container = document.querySelector(".clock-container");
+  container.innerHTML = "";
+
+  const cities = await fetchData("data/cities.json");
+
+  cities.forEach((city) => {
+    const card = document.createElement("div");
+    card.className = "clock-card";
+
+    const flag = document.createElement("img");
+    flag.src = `flags/${city.flag}`;
+    flag.alt = `${city.name} flag`;
+
+    const title = document.createElement("h2");
+    title.textContent = city.name;
+
+    const time = document.createElement("div");
+    time.className = "time";
+    time.textContent = "Loading...";
+
+    const info = document.createElement("div");
+    info.className = "info";
+    info.innerHTML = `
+      Sunrise: N/A<br>
+      Sunset: N/A<br>
+      Day length: N/A
     `;
-    container.appendChild(clock);
 
-    updateClock(city, clock);
-    setInterval(() => updateClock(city, clock), 60000); // Update every minute
+    card.appendChild(flag);
+    card.appendChild(title);
+    card.appendChild(time);
+    card.appendChild(info);
+    container.appendChild(card);
+
+    function updateClock() {
+      const now = new Date();
+      const localTime = new Date(now.toLocaleString("en-US", { timeZone: city.timezone }));
+      const hours = localTime.getHours();
+      const minutes = localTime.getMinutes().toString().padStart(2, "0");
+      const ampm = hours >= 12 ? "PM" : "AM";
+      const displayHours = hours % 12 || 12;
+
+      time.textContent = `${displayHours}:${minutes} ${ampm}`;
+    }
+
+    updateClock();
+    setInterval(updateClock, 60000);
   });
 }
 
-// Update individual clock
-function updateClock(city, element) {
-  const now = new Date();
-  const time = now.toLocaleTimeString('en-US', {
-    hour: 'numeric',
-    minute: 'numeric',
-    timeZone: city.timezone,
-    hour12: true
-  });
-  element.querySelector('.time').textContent = time;
+// Calendar
+function loadCalendar() {
+  const container = document.getElementById("calendar");
+  const today = new Date();
+  const monthsToShow = 3;
+  const startMonth = new Date(today.getFullYear(), today.getMonth() - 1, 1);
 
-  // Placeholder sunrise/sunset until API integration
-  element.querySelector('p:nth-child(3)').textContent = "Sunrise: 6:00 AM";
-  element.querySelector('p:nth-child(4)').textContent = "Sunset: 6:00 PM";
-  element.querySelector('p:nth-child(5)').textContent = "Day length: 12h 0m";
-}
+  for (let m = 0; m < monthsToShow; m++) {
+    const monthDate = new Date(startMonth.getFullYear(), startMonth.getMonth() + m, 1);
+    const monthContainer = document.createElement("div");
+    monthContainer.className = "calendar-month";
 
-// Display important dates
-function displayImportantDates(dates) {
-  const container = document.getElementById('important-dates');
-  let html = '<h2>Important Dates</h2><table><tr><th>Date</th><th>Special Occasion</th><th>Notes</th></tr>';
-  dates.forEach(item => {
-    html += `<tr><td>${item.date}</td><td>${item.occasion}</td><td>${item.notes}</td></tr>`;
-  });
-  html += '</table>';
-  container.innerHTML = html;
-}
+    const title = document.createElement("h3");
+    title.textContent = monthDate.toLocaleString("default", { month: "long", year: "numeric" });
+    monthContainer.appendChild(title);
 
-// Display placeholders for calendar, timezone, and holidays
-function displayPlaceholders() {
-  document.getElementById('calendar').innerHTML = '<p>Calendar will go here.</p>';
-  document.getElementById('timezone').innerHTML = '<p>Timezone comparison tool will go here.</p>';
-  document.getElementById('holidays').innerHTML = '<p>Bank holidays will go here.</p>';
-}
+    const table = document.createElement("table");
+    const headerRow = document.createElement("tr");
+    ["Wk", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].forEach(day => {
+      const th = document.createElement("th");
+      th.textContent = day;
+      headerRow.appendChild(th);
+    });
+    table.appendChild(headerRow);
 
-// Initialize
-async function init() {
-  try {
-    const cities = await loadJSON('data/cities.json');
-    const importantDates = await loadJSON('data/important-dates.json');
+    const firstDay = new Date(monthDate.getFullYear(), monthDate.getMonth(), 1);
+    const lastDay = new Date(monthDate.getFullYear(), monthDate.getMonth() + 1, 0);
 
-    displayClocks(cities);
-    displayImportantDates(importantDates);
-    displayPlaceholders();
+    let date = new Date(firstDay);
+    date.setDate(date.getDate() - ((date.getDay() + 6) % 7));
 
-  } catch (error) {
-    console.error('Error loading data:', error);
+    while (date <= lastDay || date.getDay() !== 1) {
+      const row = document.createElement("tr");
+
+      const weekNumberCell = document.createElement("td");
+      weekNumberCell.textContent = getWeekNumber(date);
+      row.appendChild(weekNumberCell);
+
+      for (let d = 0; d < 7; d++) {
+        const cell = document.createElement("td");
+
+        if (date.getMonth() === monthDate.getMonth()) {
+          cell.textContent = date.getDate();
+          if (isToday(date)) {
+            cell.classList.add("today");
+          }
+        }
+
+        row.appendChild(cell);
+        date.setDate(date.getDate() + 1);
+      }
+
+      table.appendChild(row);
+    }
+
+    monthContainer.appendChild(table);
+    container.appendChild(monthContainer);
   }
 }
 
-init();
+function getWeekNumber(date) {
+  const firstDayOfYear = new Date(date.getFullYear(), 0, 1);
+  const pastDaysOfYear = (date - firstDayOfYear) / 86400000;
+  return Math.ceil((pastDaysOfYear + firstDayOfYear.getDay() + 1) / 7);
+}
+
+function isToday(date) {
+  const today = new Date();
+  return date.getFullYear() === today.getFullYear() &&
+    date.getMonth() === today.getMonth() &&
+    date.getDate() === today.getDate();
+}
+
+// Important Dates
+async function loadImportantDates() {
+  const container = document.getElementById("important-dates");
+  const data = await fetchData("data/important-dates.json");
+
+  const table = document.createElement("table");
+
+  const headerRow = document.createElement("tr");
+  ["Date", "Special Occasion", "Notes"].forEach(header => {
+    const th = document.createElement("th");
+    th.textContent = header;
+    headerRow.appendChild(th);
+  });
+  table.appendChild(headerRow);
+
+  data.forEach(item => {
+    const row = document.createElement("tr");
+
+    const dateCell = document.createElement("td");
+    dateCell.textContent = item.date;
+    row.appendChild(dateCell);
+
+    const occasionCell = document.createElement("td");
+    occasionCell.textContent = item.occasion;
+    row.appendChild(occasionCell);
+
+    const notesCell = document.createElement("td");
+    notesCell.textContent = item.notes;
+    row.appendChild(notesCell);
+
+    table.appendChild(row);
+  });
+
+  container.innerHTML = "";
+  container.appendChild(table);
+}
+
+// Initialize
+document.addEventListener("DOMContentLoaded", () => {
+  loadClocks();
+  loadCalendar();
+  loadImportantDates();
+});
