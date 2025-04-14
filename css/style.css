@@ -8,158 +8,97 @@ body {
 }
 
 h1 {
-  margin-top: 30px;
-  margin-bottom: 20px;
+  font-size: 28px;
+  margin-top: 20px;
+  margin-bottom: 10px;
 }
 
-#calendar {
-  margin-bottom: 20px;
+h2 {
+  font-size: 22px;
+  margin-top: 40px;
+  margin-bottom: 10px;
 }
 
-#timezone {
-  overflow-x: auto;
+.calendar-container,
+.clock-container,
+#timezone,
+#important-dates,
+#holidays {
   margin: 20px auto;
-  padding: 0;
-  max-width: 1000px;
-}
-
-#timezone table {
-  border-collapse: collapse;
-  margin: 0 auto;
-}
-
-#timezone th,
-#timezone td {
-  border: 1px solid #ddd;
-  padding: 8px;
-}
-
-#timezone th {
-  background-color: #f4f4f4;
-}
-
-#timezone td {
-  min-width: 60px;
+  max-width: 900px;
+  padding: 10px;
 }
 
 .clock-container {
   display: flex;
-  justify-content: center;
+  justify-content: space-around;
   flex-wrap: wrap;
-  gap: 20px;
-  margin-bottom: 30px;
 }
 
-.clock-card {
-  background-color: rgba(255, 255, 255, 0.8); /* Optional: softer background for flags */
+.clock {
+  background: rgba(255, 255, 255, 0.85);
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   padding: 15px;
+  margin: 10px;
   width: 180px;
-  position: relative;
-  text-align: center;
+  transition: background 0.3s;
 }
 
-.clock-card img {
-  width: 100%;
-  height: 100px;
-  object-fit: cover;
-  border-radius: 6px;
-  opacity: 0.6; /* Softer flag background */
+.clock:hover {
+  background: rgba(255, 255, 255, 0.95);
 }
 
-.clock-card h2 {
-  margin: 10px 0 5px;
+.clock h3 {
+  margin: 0;
   font-size: 16px;
 }
 
-.clock-card .time {
-  font-size: 18px;
+.clock .time {
+  font-size: 20px;
   font-weight: bold;
-  color: #e5533c;
+  color: #e55039;
 }
 
-.clock-card .info {
+.clock .details {
   font-size: 12px;
   margin-top: 5px;
-}
-
-.important-dates {
-  margin-top: 40px;
+  color: #555;
 }
 
 .important-dates table {
-  margin: 0 auto;
+  width: 100%;
   border-collapse: collapse;
-  width: 80%;
-  max-width: 800px;
 }
 
 .important-dates th,
 .important-dates td {
   border: 1px solid #ddd;
   padding: 8px;
-  text-align: left;
+  font-size: 14px;
 }
 
 .important-dates th {
   background-color: #f4f4f4;
+  font-weight: bold;
 }
 
-#holidays {
+.important-dates tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+.important-dates tr:hover {
+  background-color: #f1f1f1;
+}
+
+.holidays {
   margin-top: 30px;
+  font-size: 14px;
+  color: #555;
 }
 
-/* Calendar styles */
-.calendar-container {
-  margin-bottom: 30px;
-}
-
-.calendar-month {
-  display: inline-block;
-  margin: 0 10px;
-  text-align: center;
-}
-
-.calendar-month h3 {
-  margin: 10px 0;
-}
-
-.calendar-month table {
-  border-collapse: collapse;
-  margin: 0 auto;
-}
-
-.calendar-month th,
-.calendar-month td {
-  border: 1px solid #ddd;
-  padding: 5px;
-  width: 30px;
-  height: 30px;
-}
-
-.calendar-month th {
-  background-color: #f4f4f4;
-}
-
-.today {
-  background-color: #e5533c;
-  color: white;
-  border-radius: 50%;
-}
-
-.holiday {
-  background-color: #fdd;
-}
-
-/* Responsive */
-@media (max-width: 768px) {
-  .clock-container {
-    flex-direction: column;
-    align-items: center;
-  }
-
-  .important-dates table {
-    width: 100%;
-  }
+/* Optional: softer flag background (apply to .clock if you want) */
+.clock {
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(4px);
 }
