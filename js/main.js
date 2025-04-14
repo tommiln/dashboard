@@ -15,31 +15,26 @@ async function loadClocks() {
 
   cities.forEach((city) => {
     const card = document.createElement("div");
-    card.className = "clock-card";
+    card.className = "clock";
 
-    const flag = document.createElement("img");
-    flag.src = `flags/${city.flag}`;
-    flag.alt = `${city.name} flag`;
-
-    const title = document.createElement("h2");
+    const title = document.createElement("h3");
     title.textContent = city.name;
 
     const time = document.createElement("div");
     time.className = "time";
     time.textContent = "Loading...";
 
-    const info = document.createElement("div");
-    info.className = "info";
-    info.innerHTML = `
+    const details = document.createElement("div");
+    details.className = "details";
+    details.innerHTML = `
       Sunrise: N/A<br>
       Sunset: N/A<br>
       Day length: N/A
     `;
 
-    card.appendChild(flag);
     card.appendChild(title);
     card.appendChild(time);
-    card.appendChild(info);
+    card.appendChild(details);
     container.appendChild(card);
 
     function updateClock() {
@@ -61,6 +56,8 @@ async function loadClocks() {
 // Calendar
 function loadCalendar() {
   const container = document.getElementById("calendar");
+  container.innerHTML = "";
+
   const today = new Date();
   const monthsToShow = 3;
   const startMonth = new Date(today.getFullYear(), today.getMonth() - 1, 1);
