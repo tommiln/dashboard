@@ -1,104 +1,114 @@
 body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-  background: #fff;
-  color: #333;
-  text-align: center;
-  transition: all 0.3s ease;
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    background: #fff;
+    color: #333;
+    text-align: center;
+    transition: all 0.3s ease;
 }
 
-h1 {
-  font-size: 28px;
-  margin-top: 20px;
-  margin-bottom: 10px;
+/* Calendar */
+.calendar-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+    gap: 20px;
 }
 
-h2 {
-  font-size: 22px;
-  margin-top: 40px;
-  margin-bottom: 10px;
-}
-
-.calendar-container,
-.clock-container,
-#timezone,
-#important-dates,
-#holidays {
-  margin: 20px auto;
-  max-width: 900px;
-  padding: 10px;
-}
-
-.clock-container {
-  display: flex;
-  justify-content: space-around;
-  flex-wrap: wrap;
+/* Clocks */
+.clocks-container {
+    display: flex;
+    justify-content: center;
+    margin: 20px;
+    gap: 20px;
 }
 
 .clock {
-  background: rgba(255, 255, 255, 0.85);
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  padding: 15px;
-  margin: 10px;
-  width: 180px;
-  transition: background 0.3s;
+    border-radius: 12px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    padding: 15px;
+    min-width: 180px;
+    background: #fff;
+    background-size: cover;
+    background-position: center;
+    position: relative;
+    overflow: hidden;
 }
 
-.clock:hover {
-  background: rgba(255, 255, 255, 0.95);
-}
-
-.clock h3 {
-  margin: 0;
-  font-size: 16px;
+.clock h2 {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: bold;
 }
 
 .clock .time {
-  font-size: 20px;
-  font-weight: bold;
-  color: #e55039;
+    color: #e74c3c;
+    font-size: 1.3rem;
+    font-weight: bold;
 }
 
 .clock .details {
-  font-size: 12px;
-  margin-top: 5px;
-  color: #555;
+    margin-top: 5px;
+    font-size: 0.75rem;
+    line-height: 1.4;
+}
+
+/* Timezone Comparison */
+.timezone-container {
+    margin: 20px auto;
+    overflow-x: auto;
+    max-width: 1000px;
+}
+
+.timezone-table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+.timezone-table th,
+.timezone-table td {
+    border: 1px solid #ccc;
+    padding: 8px;
+    text-align: center;
+    font-size: 0.8rem;
+}
+
+.current-hour {
+    background-color: #fdd835;
+}
+
+/* Important Dates */
+.important-dates {
+    margin: 40px auto;
+    max-width: 800px;
 }
 
 .important-dates table {
-  width: 100%;
-  border-collapse: collapse;
+    width: 100%;
+    border-collapse: collapse;
 }
 
 .important-dates th,
 .important-dates td {
-  border: 1px solid #ddd;
-  padding: 8px;
-  font-size: 14px;
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+    font-size: 0.9rem;
 }
 
 .important-dates th {
-  background-color: #f4f4f4;
-  font-weight: bold;
+    background-color: #f4f4f4;
 }
 
-.important-dates tr:nth-child(even) {
-  background-color: #f9f9f9;
-}
-
-.important-dates tr:hover {
-  background-color: #f1f1f1;
-}
-
+/* Holidays */
 .holidays {
-  margin-top: 30px;
-  font-size: 14px;
-  color: #555;
+    margin-bottom: 50px;
+    margin-top: 20px;
 }
 
-/* Optional: softer flag background (apply to .clock if you want) */
-.clock {
-  background: rgba(255, 255, 255, 0.8);
-  backdrop-filter: blur(4px);
+/* Utility */
+img.flag {
+    width: 100%;
+    height: auto;
+    opacity: 0.3;
 }
