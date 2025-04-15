@@ -1,7 +1,37 @@
 [
-  { "name": "New York", "timezone": "America/New_York", "image": "us.jpeg" },
-  { "name": "London", "timezone": "Europe/London", "image": "uk.jpeg" },
-  { "name": "Brussels", "timezone": "Europe/Brussels", "image": "brussels.jpeg" },
-  { "name": "Helsinki", "timezone": "Europe/Helsinki", "image": "finland.jpeg" },
-  { "name": "Singapore", "timezone": "Asia/Singapore", "image": "singapore.jpeg" }
+  {
+    "name": "New York",
+    "timezone": "America/New_York",
+    "image": "us.jpeg",
+    "sunrise": "2025-04-13T06:25:00-04:00",
+    "sunset": "2025-04-13T19:35:00-04:00"
+  },
+  {
+    "name": "London",
+    "timezone": "Europe/London",
+    "image": "uk.jpeg",
+    "sunrise": "2025-04-13T06:10:00+01:00",
+    "sunset": "2025-04-13T19:45:00+01:00"
+  },
+  {
+    "name": "Brussels",
+    "timezone": "Europe/Brussels",
+    "image": "brussels.jpeg",
+    "sunrise": "2025-04-13T06:35:00+02:00",
+    "sunset": "2025-04-13T20:10:00+02:00"
+  },
+  {
+    "name": "Helsinki",
+    "timezone": "Europe/Helsinki",
+    "image": "finland.jpeg",
+    "sunrise": "2025-04-13T05:40:00+03:00",
+    "sunset": "2025-04-13T20:25:00+03:00"
+  },
+  {
+    "name": "Singapore",
+    "timezone": "Asia/Singapore",
+    "image": "singapore.jpeg",
+    "sunrise": "2025-04-13T06:57:00+08:00",
+    "sunset": "2025-04-13T19:07:00+08:00"
+  }
 ]
