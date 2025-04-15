@@ -1,13 +1,18 @@
-# World Dashboard 🌍
+# 🌐 World Dashboard
 
 A personal global time dashboard with:
-- 📅 Calendar view (3 months: previous, current, next)
-- 🕰️ Real-time clocks with city images
-- 🌍 Timezone comparison tool (sun/moon icons)
-- 📌 Important dates list
-- ✅ Manually updated, simple GitHub Pages deployment
+- 🗓️ Calendar (Previous, Current, Next Month)
+- 🕰️ Digital Clocks with B&W Flag Backgrounds
+- 🌓 Timezone Comparison with Sun/Moon Icons
+- 📌 Custom Important Dates
+- 🏦 Bank Holidays (UK, US, Singapore)
+- 🌅 Dynamic Sunrise/Sunset and Day Length
 
-### Live Preview:
+---
+
+### 🔗 Live Preview:
 [https://tommiln.github.io/dashboard/](https://tommiln.github.io/dashboard/)
 
-### Folder Structure:
+---
+
+### 📁 Folder Structure:
