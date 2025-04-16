@@ -1,1 +1,27 @@
-[]
+[
+  {
+    "city": "New York",
+    "timezone": "America/New_York",
+    "flag": "flags/us.png"
+  },
+  {
+    "city": "London",
+    "timezone": "Europe/London",
+    "flag": "flags/uk.png"
+  },
+  {
+    "city": "Brussels",
+    "timezone": "Europe/Brussels",
+    "flag": "flags/brussels.png"
+  },
+  {
+    "city": "Helsinki",
+    "timezone": "Europe/Helsinki",
+    "flag": "flags/finland.png"
+  },
+  {
+    "city": "Singapore",
+    "timezone": "Asia/Singapore",
+    "flag": "flags/singapore.png"
+  }
+]
